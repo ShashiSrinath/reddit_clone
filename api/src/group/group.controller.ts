@@ -1,7 +1,10 @@
-import {Body, Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards} from '@nestjs/common';
 import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
-import {CreateGroupDto} from "./dto/create-group.dto";
 import {GroupService} from "./group.service";
+import {CreateGroupDto, UpdateGroupDto} from "./group.dto";
+import {GroupRoleGuard} from "./guards/group-role.guard";
+import {GroupRoles} from "./group-role.decorator";
+import { GroupUserRole } from '@prisma/client';
 
 @Controller('groups')
 export class GroupController {
@@ -17,7 +20,7 @@ export class GroupController {
     @Get('id/:id')
     async findGroupById(@Param('id', new ParseIntPipe()) id) {
         return this.groupService.findOneGroup({
-           id: id
+            id: id
         });
     }
 
@@ -28,5 +31,18 @@ export class GroupController {
         });
     }
 
+    @Put()
+    @GroupRoles(GroupUserRole.admin)
+    @UseGuards(JwtAuthGuard, GroupRoleGuard)
+    async updateGroup(@Body() args: UpdateGroupDto) {
+        return this.groupService.updateGroup(args);
+    }
+
+    @Delete(':id')
+    @GroupRoles(GroupUserRole.admin)
+    @UseGuards(JwtAuthGuard, GroupRoleGuard)
+    async deleteGroup(@Param('id', new ParseIntPipe()) id: number) {
+        return this.groupService.deleteGroup(id);
+    }
 
 }

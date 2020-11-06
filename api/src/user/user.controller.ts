@@ -11,12 +11,9 @@ import {
 import {UserRole} from '@prisma/client';
 import {JwtAuthGuard} from '../auth/guards/jwt-auth.guard';
 import {UserService} from './user.service';
-import {RegisterLocalDto} from "./dto/register.local.dto";
 import {RoleGuard} from "../auth/guards/role.guard";
 import {Roles} from "../auth/auth-role.decorator";
-import {ChangePasswordDto} from "./dto/change-password.dto";
-import {ChangeEmailDto} from "./dto/change-email.dto";
-import {UpdateUserDto} from "./dto/update-user.dto";
+import {ChangeEmailDto, ChangePasswordDto, RegisterLocalDto, UpdateUserDto} from "./user.dto";
 
 @Controller('users')
 export class UserController {
@@ -30,14 +27,13 @@ export class UserController {
 
     @Post('register-admin')
     @Roles(UserRole.administrator)
-    @UseGuards(JwtAuthGuard)
-    @UseGuards(RoleGuard)
+    @UseGuards(JwtAuthGuard,RoleGuard)
     async registerLocalAdmin(@Body() args: RegisterLocalDto) {
         return await this.usersService.createLocalAdmin(args);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get('profile')
+    @UseGuards(JwtAuthGuard)
     async getProfile(@Request() req) {
         return this.usersService.findOne({
             where: {
@@ -84,8 +80,8 @@ export class UserController {
 
 
     @Put()
-    @UseGuards(JwtAuthGuard)
     @Roles(UserRole.administrator)
+    @UseGuards(JwtAuthGuard, RoleGuard)
     async updateUser(@Body() args: UpdateUserDto) {
         return this.usersService.updateUser(args);
     }
@@ -97,8 +93,8 @@ export class UserController {
     }
 
     @Delete(':id')
-    @UseGuards(JwtAuthGuard)
     @Roles(UserRole.administrator)
+    @UseGuards(JwtAuthGuard, RoleGuard)
     async deleteUserById(@Param('id',new ParseIntPipe()) id) {
         return this.usersService.deleteUser(id);
     }

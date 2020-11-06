@@ -2,14 +2,10 @@ import {Injectable, NotFoundException} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import {PrismaService} from "../prisma/prisma.service";
 import {FindOneUserArgs, User, UserRole} from '@prisma/client';
-import {RegisterLocalDto} from "./dto/register.local.dto";
 import {ConfirmPasswordMismatchException, InvalidPasswordException} from "./exceptions/exceptions";
 import {UniqueConstraintFailedException} from "../prisma/exceptions/exceptions";
 import {UserWithoutPassword} from "./interfaces/user-without-password";
-import {ChangePasswordDto} from "./dto/change-password.dto";
-import {ChangeEmailDto} from "./dto/change-email.dto";
-import {UpdateUserDto} from "./dto/update-user.dto";
-
+import {ChangeEmailDto, ChangePasswordDto, RegisterLocalDto, UpdateUserDto} from "./user.dto";
 
 @Injectable()
 export class UserService {

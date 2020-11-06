@@ -1,8 +1,8 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {PrismaService} from "../prisma/prisma.service";
-import {CreateGroupDto} from "./dto/create-group.dto";
-import { Group, GroupUserRole, GroupWhereUniqueInput } from '@prisma/client';
+import { Group, GroupUserRole, GroupWhereUniqueInput, GroupUser } from '@prisma/client';
 import {UniqueConstraintFailedException} from "../prisma/exceptions/exceptions";
+import {CreateGroupDto, UpdateGroupDto} from "./group.dto";
 
 @Injectable()
 export class GroupService {
@@ -35,6 +35,17 @@ export class GroupService {
         }
     }
 
+    async getGroupUser(groupId: number, userId: number) : Promise<GroupUser> {
+        return this.prisma.groupUser.findOne({
+            where: {
+                groupId_userId: {
+                    groupId: groupId,
+                    userId: userId
+                }
+            }
+        })
+    }
+
     async findOneGroup(args: GroupWhereUniqueInput): Promise<Group> {
         const group = await this.prisma.group.findOne({
             where: args
@@ -43,5 +54,46 @@ export class GroupService {
             throw new NotFoundException('Group not found');
         }
         return group;
+    }
+
+    async findGroupsByQuery(searchQuery: string) : Promise<Group[]>{
+        return  this.prisma.group.findMany({
+            where: {
+                OR: {
+                    title: {
+                        contains: searchQuery
+                    },
+                    description: {
+                        contains: searchQuery
+                    },
+                    name: {
+                        contains: searchQuery
+                    }
+                }
+            }
+        })
+    }
+
+    async updateGroup({id, ...args}: UpdateGroupDto): Promise<Group> {
+        return this.prisma.group.update({
+            where: {
+                id: id
+            },
+            data: {
+                ...args
+            }
+
+        })
+    }
+
+    async deleteGroup(id: number): Promise<Group>{
+        //todo: delete all group posts
+
+
+        return this.prisma.group.delete({
+            where: {
+                id: id
+            }
+        })
     }
 }

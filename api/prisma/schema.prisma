@@ -53,23 +53,23 @@ model PostComment {
 }
 
 model PostCommentVote {
-  commentId       Int          @map("comment_id")
-  userId          Int          @map("user_id")
-  voteType        PostVoteType @map("vote_type")
-  createdDatetime DateTime     @default(now()) @map("created_datetime")
-  comment         PostComment  @relation(fields: [commentId], references: [id])
-  user            User         @relation(fields: [userId], references: [id])
+  commentId       Int         @map("comment_id")
+  userId          Int         @map("user_id")
+  createdDatetime DateTime    @default(now()) @map("created_datetime")
+  voteType        Int         @map("vote_type")
+  comment         PostComment @relation(fields: [commentId], references: [id])
+  user            User        @relation(fields: [userId], references: [id])
 
   @@id([commentId, userId])
 }
 
 model PostVote {
-  postId          Int          @map("post_id")
-  userId          Int          @map("user_id")
-  createdDatetime DateTime     @default(now()) @map("created_datetime")
-  voteType        PostVoteType @map("vote_type")
-  post            Post         @relation(fields: [postId], references: [id])
-  user            User         @relation(fields: [userId], references: [id])
+  postId          Int      @map("post_id")
+  userId          Int      @map("user_id")
+  createdDatetime DateTime @default(now()) @map("created_datetime")
+  voteType        Int      @map("vote_type")
+  post            Post     @relation(fields: [postId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
 
   @@id([postId, userId])
 }
@@ -93,12 +93,6 @@ enum GroupUserRole {
   admin
   moderator
   user
-}
-
-enum PostVoteType {
-  downvote
-  neutral
-  upvote
 }
 
 enum UserRole {
