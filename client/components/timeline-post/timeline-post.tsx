@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useContext, useState } from 'react';
 import {
   Avatar,
   Button,
@@ -7,58 +7,59 @@ import {
   IconButton,
   Paper,
   Theme,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 import {
   Comment,
   KeyboardArrowDown,
   KeyboardArrowUp,
   Share,
-} from "@material-ui/icons";
-import Link from "next/link";
-import { TimelinePost as TimeLinePostType } from "../../../api/src/post/post.interface";
-import { convertToKValue } from "../../util/convertToKValue";
-import axios from "axios";
+} from '@material-ui/icons';
+import Link from 'next/link';
+import { TimelinePost as TimeLinePostType } from '../../../api/src/post/post.interface';
+import { convertToKValue } from '../../util/convertToKValue';
+import axios from 'axios';
+import { ApiContext } from '../../context/global-context';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: "flex",
+      display: 'flex',
       padding: theme.spacing(2),
 
-      "& p": {
+      '& p': {
         margin: 0,
       },
     },
     voteColumn: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "flex-start",
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
       width: 40,
       marginRight: 10,
     },
     voteArrow: {
-      fill: "#00000050",
+      fill: '#00000050',
     },
     voteArrowUpVote: {
-      "&:hover": {
-        fill: "#e53935",
+      '&:hover': {
+        fill: '#e53935',
       },
     },
     voteArrowUpVoteActive: {
-      fill: "#e53935",
+      fill: '#e53935',
     },
     voteArrowDownVote: {
-      "&:hover": {
-        fill: "#1e88e5",
+      '&:hover': {
+        fill: '#1e88e5',
       },
     },
     voteArrowDownVoteActive: {
-      fill: "#1e88e5",
+      fill: '#1e88e5',
     },
     voteCount: {
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
     groupAvatar: {
       backgroundColor: theme.palette.primary.dark,
@@ -68,55 +69,55 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     groupName: {
       marginLeft: theme.spacing(-2),
-      fontWeight: "bold",
+      fontWeight: 'bold',
 
-      "&:hover": {
-        textDecoration: "underline",
+      '&:hover': {
+        textDecoration: 'underline',
       },
     },
     postedUserWrapper: {
-      color: theme.palette.grey["600"],
-      fontSize: "0.9em",
+      color: theme.palette.grey['600'],
+      fontSize: '0.9em',
     },
     postedUserName: {
-      "&:hover": {
-        textDecoration: "underline",
+      '&:hover': {
+        textDecoration: 'underline',
       },
     },
     postedTime: {
       marginLeft: theme.spacing(-2),
-      color: theme.palette.grey["600"],
-      fontSize: "0.9em",
+      color: theme.palette.grey['600'],
+      fontSize: '0.9em',
     },
     postContentWrapper: {
       marginTop: theme.spacing(1),
       marginRight: theme.spacing(2),
       minHeight: theme.spacing(20),
       maxHeight: theme.spacing(25),
-      position: "relative",
-      overflow: "hidden",
-      "&::after": {
-        position: "absolute",
+      position: 'relative',
+      overflow: 'hidden',
+      '&::after': {
+        position: 'absolute',
         left: 0,
         bottom: 0,
-        width: "100%",
+        width: '100%',
         content: '""',
-        backgroundImage: "linear-gradient(#ffffffaa, #fff)",
-        height: "20px",
-        boxShadow: "0 -15px 30px #fff",
+        backgroundImage: 'linear-gradient(#ffffffaa, #fff)',
+        height: '20px',
+        boxShadow: '0 -15px 30px #fff',
       },
     },
     postTitle: {
-      fontSize: "1.5em",
+      fontSize: '1.5em',
     },
     bottomRow: {
-      display: "flex",
+      display: 'flex',
       backgroundColor: theme.palette.background.paper,
       height: theme.spacing(5),
-      width: "100%",
+      width: '100%',
     },
     bottomRowButton: {
-      color: theme.palette.grey["600"],
+      color: theme.palette.grey['600'],
     },
   })
 );
@@ -127,11 +128,14 @@ interface Props {
 
 const TimelinePost: React.FC<Props> = ({ post: postOrigin }) => {
   const [post, setPost] = useState<TimeLinePostType>(postOrigin);
+  const apiPath = useContext(ApiContext);
   const classes = useStyles();
+
+  console.log(apiPath);
 
   const handleUpVoteClick = async () => {
     try {
-      const res = await axios.put(`${process.env.apiPath}/posts/add-vote`, {
+      const res = await axios.put(`${apiPath}/posts/add-vote`, {
         postId: post.id,
         vote: post.votes.userVoteType === 1 ? 0 : 1,
       });
@@ -171,22 +175,22 @@ const TimelinePost: React.FC<Props> = ({ post: postOrigin }) => {
           </IconButton>
         </div>
         <div>
-          <Grid container spacing={3} alignItems={"center"}>
+          <Grid container spacing={3} alignItems={'center'}>
             <Grid item>
               <Avatar className={classes.groupAvatar}>SS</Avatar>
             </Grid>
             <Grid item>
               <div className={classes.groupName}>
-                <Link href={"g/node"}>
+                <Link href={'g/node'}>
                   <a>g/{post.group.name}</a>
                 </Link>
               </div>
             </Grid>
             <Grid item>
               <div className={classes.postedUserWrapper}>
-                Posted By{" "}
+                Posted By{' '}
                 <span>
-                  <Link href={"u/madara"}>
+                  <Link href={'u/madara'}>
                     <a className={classes.postedUserName}>
                       u/{post.user.username}
                     </a>
