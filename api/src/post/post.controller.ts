@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +20,8 @@ import { AddVoteDto, CreatePostDto, UpdatePostDto } from './post.dto';
 import { Post as PostModel } from '@prisma/client';
 import { Roles } from '../auth/auth-role.decorator';
 import { VoteType } from '../core/enums/vote-type';
+import { AnonymousAuthGuard } from '../auth/guards/anonymous-auth.guard';
+import { PostSortType } from './lib/findPostQueryBuilder';
 
 @Controller('posts')
 export class PostController {
@@ -35,22 +38,64 @@ export class PostController {
   }
 
   @Get('id/:id')
-  async getPostByID(@Param('id', new ParseIntPipe()) id): Promise<PostModel> {
-    return this.postService.getPostById(id);
+  @UseGuards(AnonymousAuthGuard)
+  async getPostByID(
+    @Req() req,
+    @Param('id', new ParseIntPipe()) id
+  ): Promise<PostModel> {
+    return this.postService.getPostById(id, req.user.userId);
+  }
+
+  @Get('/')
+  @UseGuards(AnonymousAuthGuard)
+  async getPosts(
+    @Req() req,
+    @Query('sortBy') sortBy: PostSortType,
+    @Query('page', new ParseIntPipe()) page = 1
+  ): Promise<PostModel[]> {
+    return this.postService.getPosts({
+      userId: req.user.userId,
+      sortBy,
+      page,
+    });
   }
 
   @Get('group/:id')
+  @UseGuards(AnonymousAuthGuard)
   async getPostsByGroup(
-    @Param('id', new ParseIntPipe()) id
+    @Req() req,
+    @Param('id', new ParseIntPipe()) id,
+    @Query('sortBy') sortBy,
+    @Query('page', new ParseIntPipe()) page
   ): Promise<PostModel[]> {
-    return this.postService.getGroupPosts(id);
+    return this.postService.getPosts({
+      where: {
+        by: 'group_id',
+        groupId: id,
+      },
+      userId: req.user.userId,
+      sortBy,
+      page,
+    });
   }
 
   @Get('user/:id')
+  @UseGuards(AnonymousAuthGuard)
   async getPostsByUser(
-    @Param('id', new ParseIntPipe()) id
+    @Req() req,
+    @Param('id', new ParseIntPipe()) id,
+    @Query('sortBy') sortBy,
+    @Query('page', new ParseIntPipe()) page
   ): Promise<PostModel[]> {
-    return this.postService.getPostsByUser(id);
+    return this.postService.getPosts({
+      where: {
+        by: 'user_id',
+        userId: id,
+      },
+      userId: req.user.userId,
+      sortBy,
+      page,
+    });
   }
 
   @Put()

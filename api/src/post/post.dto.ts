@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { VoteType } from '../core/enums/vote-type';
 
 export class CreatePostDto {

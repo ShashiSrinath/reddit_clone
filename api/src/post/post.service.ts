@@ -2,9 +2,15 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddVoteDto, CreatePostDto, UpdatePostDto } from './post.dto';
 import { Post } from '@prisma/client';
-import { TimelinePost, SinglePost } from './post.interface';
+import { SinglePost, TimelinePost } from './post.interface';
 import { getVotes } from './util/get-post_count';
 import { VoteType } from '../core/enums/vote-type';
+import {
+  findAndSortByHotQuery,
+  findAndSortByNewQuery,
+  FindPostWhereType,
+  PostSortType,
+} from './lib/findPostQueryBuilder';
 
 @Injectable()
 export class PostService {
@@ -49,70 +55,37 @@ export class PostService {
     return { ...post, votes: getVotes(post.votes, userId) };
   }
 
-  async getGroupPosts(
-    groupId: number,
-    userId?: number
-  ): Promise<TimelinePost[]> {
-    const posts = await this.prisma.post.findMany({
-      where: {
-        groupId: groupId,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-      include: {
-        votes: true,
-        user: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        comments: true,
-        group: true,
-      },
-    });
+  async getPosts(options: {
+    userId?: number;
+    where?: FindPostWhereType;
+    sortBy: PostSortType;
+    page: number;
+  }): Promise<TimelinePost[]> {
+    const postLimit = 10;
+    const offset = (options.page - 1) * postLimit;
 
-    return posts.map((p) => ({
-      ...p,
-      comments: p.comments.length,
-      votes: getVotes(p.votes, userId),
-    }));
-  }
-
-  async getPostsByUser(
-    userId: number,
-    loggedInUserId?: number
-  ): Promise<TimelinePost[]> {
-    const posts = await this.prisma.post.findMany({
-      where: {
-        userId: userId,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-      include: {
-        votes: true,
-        user: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        comments: {
-          select: {
-            id: true,
-          },
-        },
-        group: true,
-      },
-    });
-
-    return posts.map((p) => ({
-      ...p,
-      comments: p.comments.length,
-      votes: getVotes(p.votes, loggedInUserId),
-    }));
+    switch (options.sortBy) {
+      case PostSortType.hot:
+        //sort hot posts
+        return this.prisma.$queryRaw(
+          findAndSortByHotQuery({
+            where: options.where,
+            reqUser: options.userId,
+            limit: postLimit,
+            offset: offset,
+          })
+        );
+      case PostSortType.new:
+        //sort hot posts
+        return this.prisma.$queryRaw(
+          findAndSortByNewQuery({
+            where: options.where,
+            reqUser: options.userId,
+            limit: postLimit,
+            offset: offset,
+          })
+        );
+    }
   }
 
   async updatePost(userId: number, args: UpdatePostDto): Promise<Post> {
@@ -138,6 +111,7 @@ export class PostService {
     return this.prisma.post.update({
       data: {
         content: args.content,
+        updatedDate: new Date(),
       },
       where: {
         id: args.postId,
@@ -151,6 +125,16 @@ export class PostService {
   ): Promise<{ count: number; userVoteType: VoteType }> {
     const d = new Date();
 
+    const prevVote = await this.prisma.postVote.findOne({
+      where: {
+        postId_userId: {
+          postId: args.postId,
+          userId: userId,
+        },
+      },
+    });
+
+    //add vote
     await this.prisma.postVote.upsert({
       where: {
         postId_userId: {
@@ -159,7 +143,7 @@ export class PostService {
         },
       },
       create: {
-        createdDatetime: d,
+        updatedDatetime: d,
         voteType: args.vote,
         post: {
           connect: {
@@ -173,7 +157,7 @@ export class PostService {
         },
       },
       update: {
-        createdDatetime: d,
+        updatedDatetime: d,
         voteType: args.vote,
         post: {
           connect: {
@@ -187,12 +171,29 @@ export class PostService {
         },
       },
     });
+
     const post = await this.prisma.post.findOne({
       where: {
         id: args.postId,
       },
       select: {
         votes: true,
+        userId: true,
+      },
+    });
+
+    //check the nature of the vote
+    const karmaDifference = args.vote - (prevVote ? prevVote.voteType : 0);
+
+    //update karma of the author
+    await this.prisma.user.update({
+      where: {
+        id: post.userId,
+      },
+      data: {
+        karma: {
+          increment: karmaDifference,
+        },
       },
     });
 
