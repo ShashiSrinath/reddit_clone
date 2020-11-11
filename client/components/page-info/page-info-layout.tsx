@@ -19,6 +19,10 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: theme.spacing(8),
     },
+    avatar: {
+      width: theme.spacing(5),
+      height: theme.spacing(5),
+    },
     titleRowWrapper: {
       margin: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     },
@@ -57,7 +61,7 @@ const PageInfoLayout: React.FC = () => {
             alignItems={'center'}
           >
             <Grid item>
-              <Avatar src={'/home-profile.svg'} width={30} height={30} />
+              <Avatar alt="Home Page " src={'/home-profile.svg'} />
             </Grid>
             <Grid item>
               <h3>Home</h3>
