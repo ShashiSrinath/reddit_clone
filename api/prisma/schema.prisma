@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["atomicNumberOperations"]
 }
 
 datasource db {
@@ -27,16 +28,18 @@ model GroupUser {
 }
 
 model Post {
-  id       Int           @id @default(autoincrement())
-  groupId  Int           @map("group_id")
-  userId   Int           @map("user_id")
-  title    String        @unique
-  content  String
-  media    String?
-  group    Group         @relation(fields: [groupId], references: [id])
-  user     User          @relation(fields: [userId], references: [id])
-  comments PostComment[]
-  votes    PostVote[]
+  id          Int           @id @default(autoincrement())
+  groupId     Int           @map("group_id")
+  userId      Int           @map("user_id")
+  title       String        @unique
+  content     String
+  media       String?
+  createdDate DateTime      @default(now()) @map("created_date")
+  updatedDate DateTime      @default(now()) @map("updated_date")
+  group       Group         @relation(fields: [groupId], references: [id])
+  user        User          @relation(fields: [userId], references: [id])
+  comments    PostComment[]
+  votes       PostVote[]
 }
 
 model PostComment {
@@ -57,6 +60,7 @@ model PostCommentVote {
   userId          Int         @map("user_id")
   createdDatetime DateTime    @default(now()) @map("created_datetime")
   voteType        Int         @map("vote_type")
+  updatedDatetime DateTime    @map("updated_datetime")
   comment         PostComment @relation(fields: [commentId], references: [id])
   user            User        @relation(fields: [userId], references: [id])
 
@@ -68,6 +72,7 @@ model PostVote {
   userId          Int      @map("user_id")
   createdDatetime DateTime @default(now()) @map("created_datetime")
   voteType        Int      @map("vote_type")
+  updatedDatetime DateTime @map("updated_datetime")
   post            Post     @relation(fields: [postId], references: [id])
   user            User     @relation(fields: [userId], references: [id])
 
