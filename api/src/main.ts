@@ -5,6 +5,7 @@ import { RoleGuard } from './auth/guards/role.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
   app.useGlobalGuards(new RoleGuard(new Reflector()));
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
