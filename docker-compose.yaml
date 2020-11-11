@@ -1,0 +1,59 @@
+version: "3.8"
+services:
+  nine_rush_api:
+    image: nine-rush-api
+    container_name: nine-rush-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "4000:4000"
+    networks:
+      - nine-rush-network
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+  nine_rush_client:
+    image: nine-rush-client
+    container_name: nine-rush-client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    depends_on:
+      - nine_rush_api
+    ports:
+      - "3000:3000"
+    networks:
+      - nine-rush-network
+  postgres:
+    container_name: nine-rush-postgres
+    image: postgres:13.0-alpine
+    volumes:
+      - nine-rush-postgres:/var/lib/postgresql/
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - nine-rush-network
+  nginx:
+    image: nine-rush-nginx
+    container_name: nine-rush-nginx
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - nine-rush-network
+networks:
+  nine-rush-network:
+    driver: bridge
+volumes:
+  nine-rush-postgres:
+  nine-rush-pgadmin-data:
+
