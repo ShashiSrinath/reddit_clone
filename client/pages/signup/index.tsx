@@ -1,13 +1,13 @@
-import LoginForm from '../../components/auth/LoginForm';
+import SignUpForm from '../../components/auth/SignUpForm';
+import Head from 'next/head';
 import { useContext, useEffect } from 'react';
 import { GlobalContext } from '../../context/global-state';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
 import { parseCookies } from 'nookies';
 import { ServerApiRequest } from '../../lib/api-request';
 import redirect from '../../lib/redirect';
 
-const LoginPage = () => {
+const SignUpPage = () => {
   const {
     auth: { state },
   } = useContext(GlobalContext);
@@ -22,9 +22,9 @@ const LoginPage = () => {
   return (
     <>
       <Head>
-        <title>Login - 9Rush</title>
+        <title>Sign Up - 9Rush</title>
       </Head>
-      <LoginForm />
+      <SignUpForm />
     </>
   );
 };
@@ -41,4 +41,4 @@ export const getServerSideProps = async (context) => {
   };
 };
 
-export default LoginPage;
+export default SignUpPage;

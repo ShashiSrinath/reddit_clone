@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       height: '80vh',
+      overflowY: 'auto',
     },
     gridWrapper: {
       height: '100%',

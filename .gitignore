@@ -1,2 +1,7 @@
-
 .idea/
+**/.env
+api/prisma/migrations/
+
+api/.bit/
+
+api/.bitmap

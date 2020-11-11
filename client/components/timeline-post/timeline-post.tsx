@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import {
   Avatar,
   Button,
@@ -16,19 +16,35 @@ import {
   Share,
 } from '@material-ui/icons';
 import Link from 'next/link';
-import { TimelinePost as TimeLinePostType } from '../../../api/src/post/post.interface';
+import { TimelinePost as TimeLinePostType } from '@bit/shashisrinath.9rush-types.postinterface';
 import { convertToKValue } from '../../util/convertToKValue';
-import axios from 'axios';
-import { ApiContext } from '../../context/global-context';
+import { useApiRequest } from '../../lib/api-request';
+import { parseTimeSince } from '../../util/parse-time-since';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      position: 'relative',
       display: 'flex',
       padding: theme.spacing(2),
 
+      '& a::last-child::before': {
+        color: 'blue',
+        content: ' ',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        zIndex: 2,
+      },
+
       '& p': {
         margin: 0,
+      },
+      '&:hover': {
+        boxShadow:
+          '0px 2px 2px -1px rgba(0,0,0,0.2), 0px 1px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
       },
     },
     voteColumn: {
@@ -93,7 +109,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
       marginRight: theme.spacing(2),
       minHeight: theme.spacing(20),
-      maxHeight: theme.spacing(25),
+      maxHeight: theme.spacing(40),
       position: 'relative',
       overflow: 'hidden',
       '&::after': {
@@ -108,6 +124,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     postTitle: {
+      marginTop: 0,
+      marginBottom: theme.spacing(1),
       fontSize: '1.5em',
     },
     bottomRow: {
@@ -128,96 +146,114 @@ interface Props {
 
 const TimelinePost: React.FC<Props> = ({ post: postOrigin }) => {
   const [post, setPost] = useState<TimeLinePostType>(postOrigin);
-  const apiPath = useContext(ApiContext);
   const classes = useStyles();
-
-  console.log(apiPath);
+  const axios = useApiRequest();
 
   const handleUpVoteClick = async () => {
     try {
-      const res = await axios.put(`${apiPath}/posts/add-vote`, {
+      const res = await axios.put('/posts/add-vote', {
         postId: post.id,
-        vote: post.votes.userVoteType === 1 ? 0 : 1,
+        vote: post.currentUserVoteType === 1 ? 0 : 1,
       });
-      setPost({ ...post, votes: res.data });
+      setPost({ ...post, voteCount: res.data.count });
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleDownVoteClick = async () => {};
+  const handleDownVoteClick = async () => {
+    try {
+      const res = await axios.put('/posts/add-vote', {
+        postId: post.id,
+        vote: post.currentUserVoteType === -1 ? 0 : -1,
+      });
+      setPost({ ...post, voteCount: res.data.count });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Paper>
-      <div className={classes.root}>
-        <div className={classes.voteColumn}>
-          <IconButton onClick={handleUpVoteClick}>
-            <KeyboardArrowUp
-              className={
-                post.votes.userVoteType == 1
-                  ? classes.voteArrowUpVoteActive
-                  : classes.voteArrowUpVote
-              }
-            />
-          </IconButton>
+      <Link href={`/g/${post.group.name}/posts/${post.id}`}>
+        <a>
+          <div className={classes.root}>
+            <div className={classes.voteColumn}>
+              <IconButton onClick={handleUpVoteClick}>
+                <KeyboardArrowUp
+                  className={
+                    post.currentUserVoteType == 1
+                      ? classes.voteArrowUpVoteActive
+                      : classes.voteArrowUpVote
+                  }
+                />
+              </IconButton>
 
-          <div className={classes.voteCount}>
-            {convertToKValue(post.votes.count)}
-          </div>
-          <IconButton onClick={handleDownVoteClick}>
-            <KeyboardArrowDown
-              className={
-                post.votes.userVoteType == -1
-                  ? classes.voteArrowDownVoteActive
-                  : classes.voteArrowDownVote
-              }
-            />
-          </IconButton>
-        </div>
-        <div>
-          <Grid container spacing={3} alignItems={'center'}>
-            <Grid item>
-              <Avatar className={classes.groupAvatar}>SS</Avatar>
-            </Grid>
-            <Grid item>
-              <div className={classes.groupName}>
-                <Link href={'g/node'}>
-                  <a>g/{post.group.name}</a>
-                </Link>
+              <div className={classes.voteCount}>
+                {convertToKValue(post.voteCount)}
               </div>
-            </Grid>
-            <Grid item>
-              <div className={classes.postedUserWrapper}>
-                Posted By{' '}
-                <span>
-                  <Link href={'u/madara'}>
-                    <a className={classes.postedUserName}>
-                      u/{post.user.username}
-                    </a>
-                  </Link>
-                </span>
-              </div>
-            </Grid>
-            <Grid item>
-              <div className={classes.postedTime}>9 hours ago</div>
-            </Grid>
-          </Grid>
-          <div className={classes.postContentWrapper}>
-            <div>
-              <h3 className={classes.postTitle}>{post.title}</h3>
+              <IconButton onClick={handleDownVoteClick}>
+                <KeyboardArrowDown
+                  className={
+                    post.currentUserVoteType == -1
+                      ? classes.voteArrowDownVoteActive
+                      : classes.voteArrowDownVote
+                  }
+                />
+              </IconButton>
             </div>
-            <p>{post.content}</p>
+            <div>
+              <Grid container spacing={3} alignItems={'center'}>
+                <Grid item>
+                  <Avatar className={classes.groupAvatar}>SS</Avatar>
+                </Grid>
+                <Grid item>
+                  <div className={classes.groupName}>
+                    <Link href={'g/node'}>
+                      <a>g/{post.group.name}</a>
+                    </Link>
+                  </div>
+                </Grid>
+                <Grid item>
+                  <div className={classes.postedUserWrapper}>
+                    Posted By{' '}
+                    <span>
+                      <Link href={'u/madara'}>
+                        <a className={classes.postedUserName}>
+                          u/{post.user.username}
+                        </a>
+                      </Link>
+                    </span>
+                  </div>
+                </Grid>
+                <Grid item>
+                  <div className={classes.postedTime}>
+                    {parseTimeSince(post.createdDate)}
+                  </div>
+                </Grid>
+              </Grid>
+              <div className={classes.postContentWrapper}>
+                <h3 className={classes.postTitle}>{post.title}</h3>
+                <p>{post.content}</p>
+              </div>
+              <div className={classes.bottomRow}>
+                <Button
+                  startIcon={<Comment />}
+                  className={classes.bottomRowButton}
+                >
+                  {post.commentCount} Comments
+                </Button>
+                <Button
+                  startIcon={<Share />}
+                  className={classes.bottomRowButton}
+                >
+                  Share
+                </Button>
+              </div>
+            </div>
           </div>
-          <div className={classes.bottomRow}>
-            <Button startIcon={<Comment />} className={classes.bottomRowButton}>
-              {post.comments} Comments
-            </Button>
-            <Button startIcon={<Share />} className={classes.bottomRowButton}>
-              Share
-            </Button>
-          </div>
-        </div>
-      </div>
+        </a>
+      </Link>
     </Paper>
   );
 };
