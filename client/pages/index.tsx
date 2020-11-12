@@ -8,6 +8,7 @@ import { TimelinePost as TimeLinePostType } from '@bit/shashisrinath.9rush-types
 import TimelinePostSkeleton from '../components/timeline-post/timeline-post-skeleton';
 import PageInfoLayout from '../components/page-info/page-info-layout';
 import { makeStyles } from '@material-ui/styles';
+import RecentPosts from '../components/recent-posts/recent-posts';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,9 +88,12 @@ export default function Home(props) {
             </Grid>
           </Grid>
           <Grid item sm={12} md={4} lg={4}>
-            <Grid container direction={'column'}>
+            <Grid container direction={'column'} spacing={5}>
               <Grid item>
                 <PageInfoLayout />
+              </Grid>
+              <Grid item>
+                <RecentPosts />
               </Grid>
             </Grid>
           </Grid>
