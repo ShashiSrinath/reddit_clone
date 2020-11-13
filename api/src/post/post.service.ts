@@ -1,14 +1,20 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddVoteDto, CreatePostDto, UpdatePostDto } from './post.dto';
 import { Post } from '@prisma/client';
-import { SinglePost, TimelinePost } from './post.interface';
+import { RecentPost, SinglePost, TimelinePost } from './post.interface';
 import { getVotes } from './util/get-post_count';
 import { VoteType } from '../core/enums/vote-type';
 import {
   findAndSortByHotQuery,
   findAndSortByNewQuery,
+  findAndSortByTopQuery,
   FindPostWhereType,
+  findRecentVisitsByUser,
   PostSortType,
 } from './lib/findPostQueryBuilder';
 
@@ -52,6 +58,30 @@ export class PostService {
         votes: true,
       },
     });
+
+    if (!post) {
+      throw new NotFoundException('post not found');
+    }
+
+    //create post visit
+    if (userId) {
+      await this.prisma.postVisit.create({
+        data: {
+          Post: {
+            connect: {
+              id: post.id,
+            },
+          },
+          User: {
+            connect: {
+              id: userId,
+            },
+          },
+          time: new Date(),
+        },
+      });
+    }
+
     return { ...post, votes: getVotes(post.votes, userId) };
   }
 
@@ -85,7 +115,22 @@ export class PostService {
             offset: offset,
           })
         );
+      case PostSortType.top:
+        //sort hot posts
+        return this.prisma.$queryRaw(
+          findAndSortByTopQuery({
+            where: options.where,
+            reqUser: options.userId,
+            limit: postLimit,
+            offset: offset,
+          })
+        );
     }
+  }
+
+  async getRecentPosts(userId: number): Promise<RecentPost[]> {
+    //get recent post vists by user
+    return this.prisma.$queryRaw(findRecentVisitsByUser(userId));
   }
 
   async updatePost(userId: number, args: UpdatePostDto): Promise<Post> {

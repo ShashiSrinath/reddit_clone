@@ -22,6 +22,7 @@ import { Roles } from '../auth/auth-role.decorator';
 import { VoteType } from '../core/enums/vote-type';
 import { AnonymousAuthGuard } from '../auth/guards/anonymous-auth.guard';
 import { PostSortType } from './lib/findPostQueryBuilder';
+import { RecentPost } from './post.interface';
 
 @Controller('posts')
 export class PostController {
@@ -58,6 +59,12 @@ export class PostController {
       sortBy,
       page,
     });
+  }
+
+  @Get('/recent-post-visits')
+  @UseGuards(JwtAuthGuard)
+  async getRecentPosts(@Req() req): Promise<RecentPost[]> {
+    return this.postService.getRecentPosts(req.user.userId);
   }
 
   @Get('group/:id')
