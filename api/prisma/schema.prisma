@@ -39,6 +39,7 @@ model Post {
   group       Group         @relation(fields: [groupId], references: [id])
   user        User          @relation(fields: [userId], references: [id])
   comments    PostComment[]
+  PostVisit   PostVisit[]
   votes       PostVote[]
 }
 
@@ -91,7 +92,17 @@ model User {
   posts         Post[]
   comments      PostComment[]
   commentVotes  PostCommentVote[]
+  PostVisit     PostVisit[]
   postVotes     PostVote[]
+}
+
+model PostVisit {
+  userId Int      @default(autoincrement())
+  postId Int      @default(autoincrement())
+  time   DateTime
+  id     Int      @id @default(autoincrement())
+  Post   Post     @relation(fields: [postId], references: [id])
+  User   User     @relation(fields: [userId], references: [id])
 }
 
 enum GroupUserRole {

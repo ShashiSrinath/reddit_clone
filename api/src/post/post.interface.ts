@@ -21,3 +21,15 @@ export interface SinglePost extends Post {
     userVoteType: VoteType;
   };
 }
+
+export interface RecentPost {
+  id: number;
+  title: string;
+  group: {
+    id: number;
+    name: string;
+  };
+  commentCount: number;
+  voteCount: number;
+  visitedTime: string;
+}
