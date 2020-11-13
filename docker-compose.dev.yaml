@@ -13,10 +13,20 @@ services:
       - "5432:5432"
     networks:
       - nine-rush-network
+  pgadmin:
+    container_name: nine-rush-pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "5430:80"
+    networks:
+      - nine-rush-network
 networks:
   nine-rush-network:
     driver: bridge
 volumes:
   nine-rush-postgres:
-  nine-rush-pgadmin-data:
 
