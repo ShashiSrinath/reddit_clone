@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddVoteDto, CreatePostDto, UpdatePostDto } from './post.dto';
 import { Post } from '@prisma/client';
@@ -53,6 +57,30 @@ export class PostService {
         votes: true,
       },
     });
+
+    if (!post) {
+      throw new NotFoundException('post not found');
+    }
+
+    //create post visit
+    if (userId) {
+      await this.prisma.postVisit.create({
+        data: {
+          Post: {
+            connect: {
+              id: post.id,
+            },
+          },
+          User: {
+            connect: {
+              id: userId,
+            },
+          },
+          time: new Date(),
+        },
+      });
+    }
+
     return { ...post, votes: getVotes(post.votes, userId) };
   }
 
