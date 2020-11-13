@@ -12,6 +12,7 @@ import { VoteType } from '../core/enums/vote-type';
 import {
   findAndSortByHotQuery,
   findAndSortByNewQuery,
+  findAndSortByTopQuery,
   FindPostWhereType,
   findRecentVisitsByUser,
   PostSortType,
@@ -114,7 +115,19 @@ export class PostService {
             offset: offset,
           })
         );
+      case PostSortType.top:
+        //sort hot posts
+        return this.prisma.$queryRaw(
+          findAndSortByTopQuery({
+            where: options.where,
+            reqUser: options.userId,
+            limit: postLimit,
+            offset: offset,
+          })
+        );
     }
+  }
+
   async getRecentPosts(userId: number): Promise<RecentPost[]> {
     //get recent post vists by user
     return this.prisma.$queryRaw(findRecentVisitsByUser(userId));
