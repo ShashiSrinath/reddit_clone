@@ -4,6 +4,4 @@ setup:
       as: DATABASE
 build:
   docker:
-    web: proxy/Dockerfile
-    nine_rush_api: api/Dockerfile
-    nine_rush_client: client/Dockerfile
+    web: api/Dockerfile
