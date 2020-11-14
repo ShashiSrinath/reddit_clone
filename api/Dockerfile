@@ -17,6 +17,8 @@ RUN yarn install
 
 # generating prisma client
 COPY --chown=node:node prisma ./
+RUN DATABASE_URL=${DATABASE_URL} npx prisma migrate save --name  "" --experimental
+RUN DATABASE_URL=${DATABASE_URL} npx prisma migrate up  --experimental
 RUN DATABASE_URL=${DATABASE_URL} npx prisma generate
 
 # copy rest of the files
