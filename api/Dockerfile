@@ -25,7 +25,7 @@ COPY --chown=node:node ./ ./
 # build project
 RUN yarn run build
 
-EXPOSE 3000
+EXPOSE 4000
 
 # start project
 CMD ["yarn", "run", "start"]
