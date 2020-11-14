@@ -1,7 +1,9 @@
 import React from 'react';
 import { createStyles, Grid, Paper, Theme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { RecentPost as RecentPostType } from '@bit/shashisrinath.9rush-types.postinterface';
 import Link from 'next/link';
+import { parseTimeSince } from '../../util/parse-time-since';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,10 +31,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const RecentPosts: React.FC = () => {
+interface Props {
+  posts: RecentPostType[];
+}
+
+const RecentPosts: React.FC<Props> = ({ posts }) => {
   const classes = useStyles();
 
-  const PostListing = ({ post }) => (
+  const PostListing: React.FC<{ post: RecentPostType }> = ({ post }) => (
     <Link href={`/g/${post.group.name}/posts/${post.id}`}>
       <a>
         <Grid
@@ -41,7 +47,7 @@ const RecentPosts: React.FC = () => {
           className={classes.postListingRoot}
         >
           <Grid item>
-            <h4 className={classes.postTitle}>sample title 1</h4>
+            <h4 className={classes.postTitle}>{post.title}</h4>
           </Grid>
           <Grid item>
             <Grid
@@ -49,9 +55,9 @@ const RecentPosts: React.FC = () => {
               justify={'space-between'}
               className={classes.detailWrapper}
             >
-              <Grid item>5 points</Grid>
-              <Grid item>2 comments</Grid>
-              <Grid item>1 h ago</Grid>
+              <Grid item>{post.voteCount} points</Grid>
+              <Grid item>{post.commentCount} comments</Grid>
+              <Grid item>{parseTimeSince(post.visitedTime)}</Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -65,12 +71,11 @@ const RecentPosts: React.FC = () => {
         <Grid item>
           <h4>Recent Posts</h4>
         </Grid>
-        <Grid item>
-          <PostListing post={{ group: { name: 'sad' }, id: 334 }} />
-        </Grid>
-        <Grid item>
-          <PostListing post={{ group: { name: 'sad' }, id: 334 }} />
-        </Grid>
+        {posts.map((p) => (
+          <Grid item>
+            <PostListing post={p} />
+          </Grid>
+        ))}
       </Grid>
     </Paper>
   );
