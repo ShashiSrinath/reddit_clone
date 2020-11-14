@@ -509,6 +509,16 @@ export declare class PrismaClient<
    * ```
    */
   get user(): UserDelegate;
+
+  /**
+   * `prisma.postVisit`: Exposes CRUD operations for the **PostVisit** model.
+   * Example usage:
+   * ```ts
+   * // Fetch zero or more PostVisits
+   * const postVisits = await prisma.postVisit.findMany()
+   * ```
+   */
+  get postVisit(): PostVisitDelegate;
 }
 
 /**
@@ -589,6 +599,15 @@ export declare const UserDistinctFieldEnum: {
 };
 
 export declare type UserDistinctFieldEnum = typeof UserDistinctFieldEnum[keyof typeof UserDistinctFieldEnum];
+
+export declare const PostVisitDistinctFieldEnum: {
+  userId: 'userId';
+  postId: 'postId';
+  time: 'time';
+  id: 'id';
+};
+
+export declare type PostVisitDistinctFieldEnum = typeof PostVisitDistinctFieldEnum[keyof typeof PostVisitDistinctFieldEnum];
 
 export declare const SortOrder: {
   asc: 'asc';
@@ -1899,6 +1918,7 @@ export type PostSelect = {
   group?: boolean | GroupArgs;
   user?: boolean | UserArgs;
   comments?: boolean | FindManyPostCommentArgs;
+  PostVisit?: boolean | FindManyPostVisitArgs;
   votes?: boolean | FindManyPostVoteArgs;
 };
 
@@ -1906,6 +1926,7 @@ export type PostInclude = {
   group?: boolean | GroupArgs;
   user?: boolean | UserArgs;
   comments?: boolean | FindManyPostCommentArgs;
+  PostVisit?: boolean | FindManyPostVisitArgs;
   votes?: boolean | FindManyPostVoteArgs;
 };
 
@@ -1926,6 +1947,8 @@ export type PostGetPayload<
             ? UserGetPayload<S['include'][P]>
             : P extends 'comments'
             ? Array<PostCommentGetPayload<S['include'][P]>>
+            : P extends 'PostVisit'
+            ? Array<PostVisitGetPayload<S['include'][P]>>
             : P extends 'votes'
             ? Array<PostVoteGetPayload<S['include'][P]>>
             : never;
@@ -1940,6 +1963,8 @@ export type PostGetPayload<
           ? UserGetPayload<S['select'][P]>
           : P extends 'comments'
           ? Array<PostCommentGetPayload<S['select'][P]>>
+          : P extends 'PostVisit'
+          ? Array<PostVisitGetPayload<S['select'][P]>>
           : P extends 'votes'
           ? Array<PostVoteGetPayload<S['select'][P]>>
           : never;
@@ -2186,6 +2211,14 @@ export declare class Prisma__PostClient<T> implements Promise<T> {
     T,
     Promise<Array<PostComment>>,
     Promise<Array<PostCommentGetPayload<T>>>
+  >;
+
+  PostVisit<T extends FindManyPostVisitArgs = {}>(
+    args?: Subset<T, FindManyPostVisitArgs>
+  ): CheckSelect<
+    T,
+    Promise<Array<PostVisit>>,
+    Promise<Array<PostVisitGetPayload<T>>>
   >;
 
   votes<T extends FindManyPostVoteArgs = {}>(
@@ -4398,6 +4431,7 @@ export type UserSelect = {
   posts?: boolean | FindManyPostArgs;
   comments?: boolean | FindManyPostCommentArgs;
   commentVotes?: boolean | FindManyPostCommentVoteArgs;
+  PostVisit?: boolean | FindManyPostVisitArgs;
   postVotes?: boolean | FindManyPostVoteArgs;
 };
 
@@ -4406,6 +4440,7 @@ export type UserInclude = {
   posts?: boolean | FindManyPostArgs;
   comments?: boolean | FindManyPostCommentArgs;
   commentVotes?: boolean | FindManyPostCommentVoteArgs;
+  PostVisit?: boolean | FindManyPostVisitArgs;
   postVotes?: boolean | FindManyPostVoteArgs;
 };
 
@@ -4428,6 +4463,8 @@ export type UserGetPayload<
             ? Array<PostCommentGetPayload<S['include'][P]>>
             : P extends 'commentVotes'
             ? Array<PostCommentVoteGetPayload<S['include'][P]>>
+            : P extends 'PostVisit'
+            ? Array<PostVisitGetPayload<S['include'][P]>>
             : P extends 'postVotes'
             ? Array<PostVoteGetPayload<S['include'][P]>>
             : never;
@@ -4444,6 +4481,8 @@ export type UserGetPayload<
           ? Array<PostCommentGetPayload<S['select'][P]>>
           : P extends 'commentVotes'
           ? Array<PostCommentVoteGetPayload<S['select'][P]>>
+          : P extends 'PostVisit'
+          ? Array<PostVisitGetPayload<S['select'][P]>>
           : P extends 'postVotes'
           ? Array<PostVoteGetPayload<S['select'][P]>>
           : never;
@@ -4696,6 +4735,14 @@ export declare class Prisma__UserClient<T> implements Promise<T> {
     Promise<Array<PostCommentVoteGetPayload<T>>>
   >;
 
+  PostVisit<T extends FindManyPostVisitArgs = {}>(
+    args?: Subset<T, FindManyPostVisitArgs>
+  ): CheckSelect<
+    T,
+    Promise<Array<PostVisit>>,
+    Promise<Array<PostVisitGetPayload<T>>>
+  >;
+
   postVotes<T extends FindManyPostVoteArgs = {}>(
     args?: Subset<T, FindManyPostVoteArgs>
   ): CheckSelect<
@@ -4933,6 +4980,610 @@ export type UserArgs = {
 };
 
 /**
+ * Model PostVisit
+ */
+
+export type PostVisit = {
+  userId: number;
+  postId: number;
+  time: Date;
+  id: number;
+};
+
+export type AggregatePostVisit = {
+  count: number;
+  avg: PostVisitAvgAggregateOutputType | null;
+  sum: PostVisitSumAggregateOutputType | null;
+  min: PostVisitMinAggregateOutputType | null;
+  max: PostVisitMaxAggregateOutputType | null;
+};
+
+export type PostVisitAvgAggregateOutputType = {
+  userId: number;
+  postId: number;
+  id: number;
+};
+
+export type PostVisitSumAggregateOutputType = {
+  userId: number;
+  postId: number;
+  id: number;
+};
+
+export type PostVisitMinAggregateOutputType = {
+  userId: number;
+  postId: number;
+  id: number;
+};
+
+export type PostVisitMaxAggregateOutputType = {
+  userId: number;
+  postId: number;
+  id: number;
+};
+
+export type PostVisitAvgAggregateInputType = {
+  userId?: true;
+  postId?: true;
+  id?: true;
+};
+
+export type PostVisitSumAggregateInputType = {
+  userId?: true;
+  postId?: true;
+  id?: true;
+};
+
+export type PostVisitMinAggregateInputType = {
+  userId?: true;
+  postId?: true;
+  id?: true;
+};
+
+export type PostVisitMaxAggregateInputType = {
+  userId?: true;
+  postId?: true;
+  id?: true;
+};
+
+export type AggregatePostVisitArgs = {
+  where?: PostVisitWhereInput;
+  orderBy?: Enumerable<PostVisitOrderByInput> | PostVisitOrderByInput;
+  cursor?: PostVisitWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Enumerable<PostVisitDistinctFieldEnum>;
+  count?: true;
+  avg?: PostVisitAvgAggregateInputType;
+  sum?: PostVisitSumAggregateInputType;
+  min?: PostVisitMinAggregateInputType;
+  max?: PostVisitMaxAggregateInputType;
+};
+
+export type GetPostVisitAggregateType<T extends AggregatePostVisitArgs> = {
+  [P in keyof T]: P extends 'count'
+    ? number
+    : GetPostVisitAggregateScalarType<T[P]>;
+};
+
+export type GetPostVisitAggregateScalarType<T extends any> = {
+  [P in keyof T]: P extends keyof PostVisitAvgAggregateOutputType
+    ? PostVisitAvgAggregateOutputType[P]
+    : never;
+};
+
+export type PostVisitSelect = {
+  userId?: boolean;
+  postId?: boolean;
+  time?: boolean;
+  id?: boolean;
+  Post?: boolean | PostArgs;
+  User?: boolean | UserArgs;
+};
+
+export type PostVisitInclude = {
+  Post?: boolean | PostArgs;
+  User?: boolean | UserArgs;
+};
+
+export type PostVisitGetPayload<
+  S extends boolean | null | undefined | PostVisitArgs,
+  U = keyof S
+> = S extends true
+  ? PostVisit
+  : S extends undefined
+  ? never
+  : S extends PostVisitArgs | FindManyPostVisitArgs
+  ? 'include' extends U
+    ? PostVisit &
+        {
+          [P in TrueKeys<S['include']>]: P extends 'Post'
+            ? PostGetPayload<S['include'][P]>
+            : P extends 'User'
+            ? UserGetPayload<S['include'][P]>
+            : never;
+        }
+    : 'select' extends U
+    ? {
+        [P in TrueKeys<S['select']>]: P extends keyof PostVisit
+          ? PostVisit[P]
+          : P extends 'Post'
+          ? PostGetPayload<S['select'][P]>
+          : P extends 'User'
+          ? UserGetPayload<S['select'][P]>
+          : never;
+      }
+    : PostVisit
+  : PostVisit;
+
+export interface PostVisitDelegate {
+  /**
+   * Find zero or one PostVisit that matches the filter.
+   * @param {FindOnePostVisitArgs} args - Arguments to find a PostVisit
+   * @example
+   * // Get one PostVisit
+   * const postVisit = await prisma.postVisit.findOne({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   **/
+  findOne<T extends FindOnePostVisitArgs>(
+    args: Subset<T, FindOnePostVisitArgs>
+  ): CheckSelect<
+    T,
+    Prisma__PostVisitClient<PostVisit | null>,
+    Prisma__PostVisitClient<PostVisitGetPayload<T> | null>
+  >;
+  /**
+   * Find the first PostVisit that matches the filter.
+   * @param {FindFirstPostVisitArgs} args - Arguments to find a PostVisit
+   * @example
+   * // Get one PostVisit
+   * const postVisit = await prisma.postVisit.findFirst({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   **/
+  findFirst<T extends FindFirstPostVisitArgs>(
+    args?: Subset<T, FindFirstPostVisitArgs>
+  ): CheckSelect<
+    T,
+    Prisma__PostVisitClient<PostVisit | null>,
+    Prisma__PostVisitClient<PostVisitGetPayload<T> | null>
+  >;
+  /**
+   * Find zero or more PostVisits that matches the filter.
+   * @param {FindManyPostVisitArgs=} args - Arguments to filter and select certain fields only.
+   * @example
+   * // Get all PostVisits
+   * const postVisits = await prisma.postVisit.findMany()
+   *
+   * // Get first 10 PostVisits
+   * const postVisits = await prisma.postVisit.findMany({ take: 10 })
+   *
+   * // Only select the `userId`
+   * const postVisitWithUserIdOnly = await prisma.postVisit.findMany({ select: { userId: true } })
+   *
+   **/
+  findMany<T extends FindManyPostVisitArgs>(
+    args?: Subset<T, FindManyPostVisitArgs>
+  ): CheckSelect<
+    T,
+    Promise<Array<PostVisit>>,
+    Promise<Array<PostVisitGetPayload<T>>>
+  >;
+  /**
+   * Create a PostVisit.
+   * @param {PostVisitCreateArgs} args - Arguments to create a PostVisit.
+   * @example
+   * // Create one PostVisit
+   * const PostVisit = await prisma.postVisit.create({
+   *   data: {
+   *     // ... data to create a PostVisit
+   *   }
+   * })
+   *
+   **/
+  create<T extends PostVisitCreateArgs>(
+    args: Subset<T, PostVisitCreateArgs>
+  ): CheckSelect<
+    T,
+    Prisma__PostVisitClient<PostVisit>,
+    Prisma__PostVisitClient<PostVisitGetPayload<T>>
+  >;
+  /**
+   * Delete a PostVisit.
+   * @param {PostVisitDeleteArgs} args - Arguments to delete one PostVisit.
+   * @example
+   * // Delete one PostVisit
+   * const PostVisit = await prisma.postVisit.delete({
+   *   where: {
+   *     // ... filter to delete one PostVisit
+   *   }
+   * })
+   *
+   **/
+  delete<T extends PostVisitDeleteArgs>(
+    args: Subset<T, PostVisitDeleteArgs>
+  ): CheckSelect<
+    T,
+    Prisma__PostVisitClient<PostVisit>,
+    Prisma__PostVisitClient<PostVisitGetPayload<T>>
+  >;
+  /**
+   * Update one PostVisit.
+   * @param {PostVisitUpdateArgs} args - Arguments to update one PostVisit.
+   * @example
+   * // Update one PostVisit
+   * const postVisit = await prisma.postVisit.update({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   *
+   **/
+  update<T extends PostVisitUpdateArgs>(
+    args: Subset<T, PostVisitUpdateArgs>
+  ): CheckSelect<
+    T,
+    Prisma__PostVisitClient<PostVisit>,
+    Prisma__PostVisitClient<PostVisitGetPayload<T>>
+  >;
+  /**
+   * Delete zero or more PostVisits.
+   * @param {PostVisitDeleteManyArgs} args - Arguments to filter PostVisits to delete.
+   * @example
+   * // Delete a few PostVisits
+   * const { count } = await prisma.postVisit.deleteMany({
+   *   where: {
+   *     // ... provide filter here
+   *   }
+   * })
+   *
+   **/
+  deleteMany<T extends PostVisitDeleteManyArgs>(
+    args: Subset<T, PostVisitDeleteManyArgs>
+  ): Promise<BatchPayload>;
+  /**
+   * Update zero or more PostVisits.
+   * @param {PostVisitUpdateManyArgs} args - Arguments to update one or more rows.
+   * @example
+   * // Update many PostVisits
+   * const postVisit = await prisma.postVisit.updateMany({
+   *   where: {
+   *     // ... provide filter here
+   *   },
+   *   data: {
+   *     // ... provide data here
+   *   }
+   * })
+   *
+   **/
+  updateMany<T extends PostVisitUpdateManyArgs>(
+    args: Subset<T, PostVisitUpdateManyArgs>
+  ): Promise<BatchPayload>;
+  /**
+   * Create or update one PostVisit.
+   * @param {PostVisitUpsertArgs} args - Arguments to update or create a PostVisit.
+   * @example
+   * // Update or create a PostVisit
+   * const postVisit = await prisma.postVisit.upsert({
+   *   create: {
+   *     // ... data to create a PostVisit
+   *   },
+   *   update: {
+   *     // ... in case it already exists, update
+   *   },
+   *   where: {
+   *     // ... the filter for the PostVisit we want to update
+   *   }
+   * })
+   **/
+  upsert<T extends PostVisitUpsertArgs>(
+    args: Subset<T, PostVisitUpsertArgs>
+  ): CheckSelect<
+    T,
+    Prisma__PostVisitClient<PostVisit>,
+    Prisma__PostVisitClient<PostVisitGetPayload<T>>
+  >;
+  /**
+   * Count
+   */
+  count(
+    args?: Omit<FindManyPostVisitArgs, 'select' | 'include'>
+  ): Promise<number>;
+
+  /**
+   * Aggregate
+   */
+  aggregate<T extends AggregatePostVisitArgs>(
+    args: Subset<T, AggregatePostVisitArgs>
+  ): Promise<GetPostVisitAggregateType<T>>;
+}
+
+/**
+ * The delegate class that acts as a "Promise-like" for PostVisit.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export declare class Prisma__PostVisitClient<T> implements Promise<T> {
+  private readonly _dmmf;
+  private readonly _fetcher;
+  private readonly _queryType;
+  private readonly _rootField;
+  private readonly _clientMethod;
+  private readonly _args;
+  private readonly _dataPath;
+  private readonly _errorFormat;
+  private readonly _measurePerformance?;
+  private _isList;
+  private _callsite;
+  private _requestPromise?;
+  constructor(
+    _dmmf: DMMFClass,
+    _fetcher: PrismaClientFetcher,
+    _queryType: 'query' | 'mutation',
+    _rootField: string,
+    _clientMethod: string,
+    _args: any,
+    _dataPath: string[],
+    _errorFormat: ErrorFormat,
+    _measurePerformance?: boolean | undefined,
+    _isList?: boolean
+  );
+  readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+  Post<T extends PostArgs = {}>(
+    args?: Subset<T, PostArgs>
+  ): CheckSelect<
+    T,
+    Prisma__PostClient<Post | null>,
+    Prisma__PostClient<PostGetPayload<T> | null>
+  >;
+
+  User<T extends UserArgs = {}>(
+    args?: Subset<T, UserArgs>
+  ): CheckSelect<
+    T,
+    Prisma__UserClient<User | null>,
+    Prisma__UserClient<UserGetPayload<T> | null>
+  >;
+
+  private get _document();
+  /**
+   * Attaches callbacks for the resolution and/or rejection of the Promise.
+   * @param onfulfilled The callback to execute when the Promise is resolved.
+   * @param onrejected The callback to execute when the Promise is rejected.
+   * @returns A Promise for the completion of which ever callback is executed.
+   */
+  then<TResult1 = T, TResult2 = never>(
+    onfulfilled?:
+      | ((value: T) => TResult1 | Promise<TResult1>)
+      | undefined
+      | null,
+    onrejected?:
+      | ((reason: any) => TResult2 | Promise<TResult2>)
+      | undefined
+      | null
+  ): Promise<TResult1 | TResult2>;
+  /**
+   * Attaches a callback for only the rejection of the Promise.
+   * @param onrejected The callback to execute when the Promise is rejected.
+   * @returns A Promise for the completion of the callback.
+   */
+  catch<TResult = never>(
+    onrejected?:
+      | ((reason: any) => TResult | Promise<TResult>)
+      | undefined
+      | null
+  ): Promise<T | TResult>;
+  /**
+   * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+   * resolved value cannot be modified from the callback.
+   * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+   * @returns A Promise for the completion of the callback.
+   */
+  finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+}
+
+// Custom InputTypes
+
+/**
+ * PostVisit findOne
+ */
+export type FindOnePostVisitArgs = {
+  /**
+   * Select specific fields to fetch from the PostVisit
+   **/
+  select?: PostVisitSelect | null;
+  /**
+   * Choose, which related nodes to fetch as well.
+   **/
+  include?: PostVisitInclude | null;
+  /**
+   * Filter, which PostVisit to fetch.
+   **/
+  where: PostVisitWhereUniqueInput;
+};
+
+/**
+ * PostVisit findFirst
+ */
+export type FindFirstPostVisitArgs = {
+  /**
+   * Select specific fields to fetch from the PostVisit
+   **/
+  select?: PostVisitSelect | null;
+  /**
+   * Choose, which related nodes to fetch as well.
+   **/
+  include?: PostVisitInclude | null;
+  /**
+   * Filter, which PostVisit to fetch.
+   **/
+  where?: PostVisitWhereInput;
+  orderBy?: Enumerable<PostVisitOrderByInput> | PostVisitOrderByInput;
+  cursor?: PostVisitWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Enumerable<PostVisitDistinctFieldEnum>;
+};
+
+/**
+ * PostVisit findMany
+ */
+export type FindManyPostVisitArgs = {
+  /**
+   * Select specific fields to fetch from the PostVisit
+   **/
+  select?: PostVisitSelect | null;
+  /**
+   * Choose, which related nodes to fetch as well.
+   **/
+  include?: PostVisitInclude | null;
+  /**
+   * Filter, which PostVisits to fetch.
+   **/
+  where?: PostVisitWhereInput;
+  /**
+   * Determine the order of the PostVisits to fetch.
+   **/
+  orderBy?: Enumerable<PostVisitOrderByInput> | PostVisitOrderByInput;
+  /**
+   * Sets the position for listing PostVisits.
+   **/
+  cursor?: PostVisitWhereUniqueInput;
+  /**
+   * The number of PostVisits to fetch. If negative number, it will take PostVisits before the `cursor`.
+   **/
+  take?: number;
+  /**
+   * Skip the first `n` PostVisits.
+   **/
+  skip?: number;
+  distinct?: Enumerable<PostVisitDistinctFieldEnum>;
+};
+
+/**
+ * PostVisit create
+ */
+export type PostVisitCreateArgs = {
+  /**
+   * Select specific fields to fetch from the PostVisit
+   **/
+  select?: PostVisitSelect | null;
+  /**
+   * Choose, which related nodes to fetch as well.
+   **/
+  include?: PostVisitInclude | null;
+  /**
+   * The data needed to create a PostVisit.
+   **/
+  data: PostVisitCreateInput;
+};
+
+/**
+ * PostVisit update
+ */
+export type PostVisitUpdateArgs = {
+  /**
+   * Select specific fields to fetch from the PostVisit
+   **/
+  select?: PostVisitSelect | null;
+  /**
+   * Choose, which related nodes to fetch as well.
+   **/
+  include?: PostVisitInclude | null;
+  /**
+   * The data needed to update a PostVisit.
+   **/
+  data: PostVisitUpdateInput;
+  /**
+   * Choose, which PostVisit to update.
+   **/
+  where: PostVisitWhereUniqueInput;
+};
+
+/**
+ * PostVisit updateMany
+ */
+export type PostVisitUpdateManyArgs = {
+  data: PostVisitUpdateManyMutationInput;
+  where?: PostVisitWhereInput;
+};
+
+/**
+ * PostVisit upsert
+ */
+export type PostVisitUpsertArgs = {
+  /**
+   * Select specific fields to fetch from the PostVisit
+   **/
+  select?: PostVisitSelect | null;
+  /**
+   * Choose, which related nodes to fetch as well.
+   **/
+  include?: PostVisitInclude | null;
+  /**
+   * The filter to search for the PostVisit to update in case it exists.
+   **/
+  where: PostVisitWhereUniqueInput;
+  /**
+   * In case the PostVisit found by the `where` argument doesn't exist, create a new PostVisit with this data.
+   **/
+  create: PostVisitCreateInput;
+  /**
+   * In case the PostVisit was found with the provided `where` argument, update it with this data.
+   **/
+  update: PostVisitUpdateInput;
+};
+
+/**
+ * PostVisit delete
+ */
+export type PostVisitDeleteArgs = {
+  /**
+   * Select specific fields to fetch from the PostVisit
+   **/
+  select?: PostVisitSelect | null;
+  /**
+   * Choose, which related nodes to fetch as well.
+   **/
+  include?: PostVisitInclude | null;
+  /**
+   * Filter which PostVisit to delete.
+   **/
+  where: PostVisitWhereUniqueInput;
+};
+
+/**
+ * PostVisit deleteMany
+ */
+export type PostVisitDeleteManyArgs = {
+  where?: PostVisitWhereInput;
+};
+
+/**
+ * PostVisit without action
+ */
+export type PostVisitArgs = {
+  /**
+   * Select specific fields to fetch from the PostVisit
+   **/
+  select?: PostVisitSelect | null;
+  /**
+   * Choose, which related nodes to fetch as well.
+   **/
+  include?: PostVisitInclude | null;
+};
+
+/**
  * Deep Input Types
  */
 
@@ -4996,6 +5647,7 @@ export type PostWhereInput = {
   group?: GroupRelationFilter | GroupWhereInput;
   user?: UserRelationFilter | UserWhereInput;
   comments?: PostCommentListRelationFilter;
+  PostVisit?: PostVisitListRelationFilter;
   votes?: PostVoteListRelationFilter;
 };
 
@@ -5108,6 +5760,7 @@ export type UserWhereInput = {
   posts?: PostListRelationFilter;
   comments?: PostCommentListRelationFilter;
   commentVotes?: PostCommentVoteListRelationFilter;
+  PostVisit?: PostVisitListRelationFilter;
   postVotes?: PostVoteListRelationFilter;
 };
 
@@ -5125,6 +5778,29 @@ export type UserWhereUniqueInput = {
   id?: number;
   username?: string;
   email?: string;
+};
+
+export type PostVisitWhereInput = {
+  AND?: PostVisitWhereInput | Enumerable<PostVisitWhereInput>;
+  OR?: PostVisitWhereInput | Enumerable<PostVisitWhereInput>;
+  NOT?: PostVisitWhereInput | Enumerable<PostVisitWhereInput>;
+  userId?: IntFilter | number;
+  postId?: IntFilter | number;
+  time?: DateTimeFilter | Date | string;
+  id?: IntFilter | number;
+  Post?: PostRelationFilter | PostWhereInput;
+  User?: UserRelationFilter | UserWhereInput;
+};
+
+export type PostVisitOrderByInput = {
+  userId?: SortOrder;
+  postId?: SortOrder;
+  time?: SortOrder;
+  id?: SortOrder;
+};
+
+export type PostVisitWhereUniqueInput = {
+  id?: number;
 };
 
 export type GroupCreateInput = {
@@ -5180,6 +5856,7 @@ export type PostCreateInput = {
   group: GroupCreateOneWithoutPostsInput;
   user: UserCreateOneWithoutPostsInput;
   comments?: PostCommentCreateManyWithoutPostInput;
+  PostVisit?: PostVisitCreateManyWithoutPostInput;
   votes?: PostVoteCreateManyWithoutPostInput;
 };
 
@@ -5192,6 +5869,7 @@ export type PostUpdateInput = {
   group?: GroupUpdateOneRequiredWithoutPostsInput;
   user?: UserUpdateOneRequiredWithoutPostsInput;
   comments?: PostCommentUpdateManyWithoutPostInput;
+  PostVisit?: PostVisitUpdateManyWithoutPostInput;
   votes?: PostVoteUpdateManyWithoutPostInput;
 };
 
@@ -5280,6 +5958,7 @@ export type UserCreateInput = {
   posts?: PostCreateManyWithoutUserInput;
   comments?: PostCommentCreateManyWithoutUserInput;
   commentVotes?: PostCommentVoteCreateManyWithoutUserInput;
+  PostVisit?: PostVisitCreateManyWithoutUserInput;
   postVotes?: PostVoteCreateManyWithoutUserInput;
 };
 
@@ -5294,6 +5973,7 @@ export type UserUpdateInput = {
   posts?: PostUpdateManyWithoutUserInput;
   comments?: PostCommentUpdateManyWithoutUserInput;
   commentVotes?: PostCommentVoteUpdateManyWithoutUserInput;
+  PostVisit?: PostVisitUpdateManyWithoutUserInput;
   postVotes?: PostVoteUpdateManyWithoutUserInput;
 };
 
@@ -5304,6 +5984,22 @@ export type UserUpdateManyMutationInput = {
   karma?: number | IntFieldUpdateOperationsInput;
   role?: UserRole | EnumUserRoleFieldUpdateOperationsInput;
   emailVerified?: boolean | BoolFieldUpdateOperationsInput;
+};
+
+export type PostVisitCreateInput = {
+  time: Date | string;
+  Post?: PostCreateOneWithoutPostVisitInput;
+  User?: UserCreateOneWithoutPostVisitInput;
+};
+
+export type PostVisitUpdateInput = {
+  time?: Date | string | DateTimeFieldUpdateOperationsInput;
+  Post?: PostUpdateOneRequiredWithoutPostVisitInput;
+  User?: UserUpdateOneRequiredWithoutPostVisitInput;
+};
+
+export type PostVisitUpdateManyMutationInput = {
+  time?: Date | string | DateTimeFieldUpdateOperationsInput;
 };
 
 export type IntFilter = {
@@ -5396,6 +6092,12 @@ export type PostCommentListRelationFilter = {
   every?: PostCommentWhereInput;
   some?: PostCommentWhereInput;
   none?: PostCommentWhereInput;
+};
+
+export type PostVisitListRelationFilter = {
+  every?: PostVisitWhereInput;
+  some?: PostVisitWhereInput;
+  none?: PostVisitWhereInput;
 };
 
 export type PostVoteListRelationFilter = {
@@ -5555,6 +6257,13 @@ export type PostCommentCreateManyWithoutPostInput = {
     | Enumerable<PostCommentWhereUniqueInput>;
 };
 
+export type PostVisitCreateManyWithoutPostInput = {
+  create?:
+    | PostVisitCreateWithoutPostInput
+    | Enumerable<PostVisitCreateWithoutPostInput>;
+  connect?: PostVisitWhereUniqueInput | Enumerable<PostVisitWhereUniqueInput>;
+};
+
 export type PostVoteCreateManyWithoutPostInput = {
   create?:
     | PostVoteCreateWithoutPostInput
@@ -5606,6 +6315,30 @@ export type PostCommentUpdateManyWithoutPostInput = {
   upsert?:
     | PostCommentUpsertWithWhereUniqueWithoutPostInput
     | Enumerable<PostCommentUpsertWithWhereUniqueWithoutPostInput>;
+};
+
+export type PostVisitUpdateManyWithoutPostInput = {
+  create?:
+    | PostVisitCreateWithoutPostInput
+    | Enumerable<PostVisitCreateWithoutPostInput>;
+  connect?: PostVisitWhereUniqueInput | Enumerable<PostVisitWhereUniqueInput>;
+  set?: PostVisitWhereUniqueInput | Enumerable<PostVisitWhereUniqueInput>;
+  disconnect?:
+    | PostVisitWhereUniqueInput
+    | Enumerable<PostVisitWhereUniqueInput>;
+  delete?: PostVisitWhereUniqueInput | Enumerable<PostVisitWhereUniqueInput>;
+  update?:
+    | PostVisitUpdateWithWhereUniqueWithoutPostInput
+    | Enumerable<PostVisitUpdateWithWhereUniqueWithoutPostInput>;
+  updateMany?:
+    | PostVisitUpdateManyWithWhereNestedInput
+    | Enumerable<PostVisitUpdateManyWithWhereNestedInput>;
+  deleteMany?:
+    | PostVisitScalarWhereInput
+    | Enumerable<PostVisitScalarWhereInput>;
+  upsert?:
+    | PostVisitUpsertWithWhereUniqueWithoutPostInput
+    | Enumerable<PostVisitUpsertWithWhereUniqueWithoutPostInput>;
 };
 
 export type PostVoteUpdateManyWithoutPostInput = {
@@ -5826,6 +6559,13 @@ export type PostCommentVoteCreateManyWithoutUserInput = {
     | Enumerable<PostCommentVoteWhereUniqueInput>;
 };
 
+export type PostVisitCreateManyWithoutUserInput = {
+  create?:
+    | PostVisitCreateWithoutUserInput
+    | Enumerable<PostVisitCreateWithoutUserInput>;
+  connect?: PostVisitWhereUniqueInput | Enumerable<PostVisitWhereUniqueInput>;
+};
+
 export type PostVoteCreateManyWithoutUserInput = {
   create?:
     | PostVoteCreateWithoutUserInput
@@ -5941,6 +6681,30 @@ export type PostCommentVoteUpdateManyWithoutUserInput = {
     | Enumerable<PostCommentVoteUpsertWithWhereUniqueWithoutUserInput>;
 };
 
+export type PostVisitUpdateManyWithoutUserInput = {
+  create?:
+    | PostVisitCreateWithoutUserInput
+    | Enumerable<PostVisitCreateWithoutUserInput>;
+  connect?: PostVisitWhereUniqueInput | Enumerable<PostVisitWhereUniqueInput>;
+  set?: PostVisitWhereUniqueInput | Enumerable<PostVisitWhereUniqueInput>;
+  disconnect?:
+    | PostVisitWhereUniqueInput
+    | Enumerable<PostVisitWhereUniqueInput>;
+  delete?: PostVisitWhereUniqueInput | Enumerable<PostVisitWhereUniqueInput>;
+  update?:
+    | PostVisitUpdateWithWhereUniqueWithoutUserInput
+    | Enumerable<PostVisitUpdateWithWhereUniqueWithoutUserInput>;
+  updateMany?:
+    | PostVisitUpdateManyWithWhereNestedInput
+    | Enumerable<PostVisitUpdateManyWithWhereNestedInput>;
+  deleteMany?:
+    | PostVisitScalarWhereInput
+    | Enumerable<PostVisitScalarWhereInput>;
+  upsert?:
+    | PostVisitUpsertWithWhereUniqueWithoutUserInput
+    | Enumerable<PostVisitUpsertWithWhereUniqueWithoutUserInput>;
+};
+
 export type PostVoteUpdateManyWithoutUserInput = {
   create?:
     | PostVoteCreateWithoutUserInput
@@ -5959,6 +6723,30 @@ export type PostVoteUpdateManyWithoutUserInput = {
   upsert?:
     | PostVoteUpsertWithWhereUniqueWithoutUserInput
     | Enumerable<PostVoteUpsertWithWhereUniqueWithoutUserInput>;
+};
+
+export type PostCreateOneWithoutPostVisitInput = {
+  create?: PostCreateWithoutPostVisitInput;
+  connect?: PostWhereUniqueInput;
+};
+
+export type UserCreateOneWithoutPostVisitInput = {
+  create?: UserCreateWithoutPostVisitInput;
+  connect?: UserWhereUniqueInput;
+};
+
+export type PostUpdateOneRequiredWithoutPostVisitInput = {
+  create?: PostCreateWithoutPostVisitInput;
+  connect?: PostWhereUniqueInput;
+  update?: PostUpdateWithoutPostVisitDataInput;
+  upsert?: PostUpsertWithoutPostVisitInput;
+};
+
+export type UserUpdateOneRequiredWithoutPostVisitInput = {
+  create?: UserCreateWithoutPostVisitInput;
+  connect?: UserWhereUniqueInput;
+  update?: UserUpdateWithoutPostVisitDataInput;
+  upsert?: UserUpsertWithoutPostVisitInput;
 };
 
 export type NestedIntFilter = {
@@ -6043,6 +6831,7 @@ export type PostCreateWithoutGroupInput = {
   updatedDate?: Date | string;
   user: UserCreateOneWithoutPostsInput;
   comments?: PostCommentCreateManyWithoutPostInput;
+  PostVisit?: PostVisitCreateManyWithoutPostInput;
   votes?: PostVoteCreateManyWithoutPostInput;
 };
 
@@ -6118,6 +6907,7 @@ export type UserCreateWithoutGroupUsersInput = {
   posts?: PostCreateManyWithoutUserInput;
   comments?: PostCommentCreateManyWithoutUserInput;
   commentVotes?: PostCommentVoteCreateManyWithoutUserInput;
+  PostVisit?: PostVisitCreateManyWithoutUserInput;
   postVotes?: PostVoteCreateManyWithoutUserInput;
 };
 
@@ -6143,6 +6933,7 @@ export type UserUpdateWithoutGroupUsersDataInput = {
   posts?: PostUpdateManyWithoutUserInput;
   comments?: PostCommentUpdateManyWithoutUserInput;
   commentVotes?: PostCommentVoteUpdateManyWithoutUserInput;
+  PostVisit?: PostVisitUpdateManyWithoutUserInput;
   postVotes?: PostVoteUpdateManyWithoutUserInput;
 };
 
@@ -6168,6 +6959,7 @@ export type UserCreateWithoutPostsInput = {
   groupUsers?: GroupUserCreateManyWithoutUserInput;
   comments?: PostCommentCreateManyWithoutUserInput;
   commentVotes?: PostCommentVoteCreateManyWithoutUserInput;
+  PostVisit?: PostVisitCreateManyWithoutUserInput;
   postVotes?: PostVoteCreateManyWithoutUserInput;
 };
 
@@ -6177,6 +6969,11 @@ export type PostCommentCreateWithoutPostInput = {
   user: UserCreateOneWithoutCommentsInput;
   childComments?: PostCommentCreateManyWithoutParentCommentInput;
   votes?: PostCommentVoteCreateManyWithoutCommentInput;
+};
+
+export type PostVisitCreateWithoutPostInput = {
+  time: Date | string;
+  User?: UserCreateOneWithoutPostVisitInput;
 };
 
 export type PostVoteCreateWithoutPostInput = {
@@ -6208,6 +7005,7 @@ export type UserUpdateWithoutPostsDataInput = {
   groupUsers?: GroupUserUpdateManyWithoutUserInput;
   comments?: PostCommentUpdateManyWithoutUserInput;
   commentVotes?: PostCommentVoteUpdateManyWithoutUserInput;
+  PostVisit?: PostVisitUpdateManyWithoutUserInput;
   postVotes?: PostVoteUpdateManyWithoutUserInput;
 };
 
@@ -6241,6 +7039,32 @@ export type PostCommentUpsertWithWhereUniqueWithoutPostInput = {
   where: PostCommentWhereUniqueInput;
   update: PostCommentUpdateWithoutPostDataInput;
   create: PostCommentCreateWithoutPostInput;
+};
+
+export type PostVisitUpdateWithWhereUniqueWithoutPostInput = {
+  where: PostVisitWhereUniqueInput;
+  data: PostVisitUpdateWithoutPostDataInput;
+};
+
+export type PostVisitUpdateManyWithWhereNestedInput = {
+  where: PostVisitScalarWhereInput;
+  data: PostVisitUpdateManyDataInput;
+};
+
+export type PostVisitScalarWhereInput = {
+  AND?: PostVisitScalarWhereInput | Enumerable<PostVisitScalarWhereInput>;
+  OR?: PostVisitScalarWhereInput | Enumerable<PostVisitScalarWhereInput>;
+  NOT?: PostVisitScalarWhereInput | Enumerable<PostVisitScalarWhereInput>;
+  userId?: IntFilter | number;
+  postId?: IntFilter | number;
+  time?: DateTimeFilter | Date | string;
+  id?: IntFilter | number;
+};
+
+export type PostVisitUpsertWithWhereUniqueWithoutPostInput = {
+  where: PostVisitWhereUniqueInput;
+  update: PostVisitUpdateWithoutPostDataInput;
+  create: PostVisitCreateWithoutPostInput;
 };
 
 export type PostVoteUpdateWithWhereUniqueWithoutPostInput = {
@@ -6286,6 +7110,7 @@ export type PostCreateWithoutCommentsInput = {
   updatedDate?: Date | string;
   group: GroupCreateOneWithoutPostsInput;
   user: UserCreateOneWithoutPostsInput;
+  PostVisit?: PostVisitCreateManyWithoutPostInput;
   votes?: PostVoteCreateManyWithoutPostInput;
 };
 
@@ -6299,6 +7124,7 @@ export type UserCreateWithoutCommentsInput = {
   groupUsers?: GroupUserCreateManyWithoutUserInput;
   posts?: PostCreateManyWithoutUserInput;
   commentVotes?: PostCommentVoteCreateManyWithoutUserInput;
+  PostVisit?: PostVisitCreateManyWithoutUserInput;
   postVotes?: PostVoteCreateManyWithoutUserInput;
 };
 
@@ -6338,6 +7164,7 @@ export type PostUpdateWithoutCommentsDataInput = {
   updatedDate?: Date | string | DateTimeFieldUpdateOperationsInput;
   group?: GroupUpdateOneRequiredWithoutPostsInput;
   user?: UserUpdateOneRequiredWithoutPostsInput;
+  PostVisit?: PostVisitUpdateManyWithoutPostInput;
   votes?: PostVoteUpdateManyWithoutPostInput;
 };
 
@@ -6356,6 +7183,7 @@ export type UserUpdateWithoutCommentsDataInput = {
   groupUsers?: GroupUserUpdateManyWithoutUserInput;
   posts?: PostUpdateManyWithoutUserInput;
   commentVotes?: PostCommentVoteUpdateManyWithoutUserInput;
+  PostVisit?: PostVisitUpdateManyWithoutUserInput;
   postVotes?: PostVoteUpdateManyWithoutUserInput;
 };
 
@@ -6426,6 +7254,7 @@ export type UserCreateWithoutCommentVotesInput = {
   groupUsers?: GroupUserCreateManyWithoutUserInput;
   posts?: PostCreateManyWithoutUserInput;
   comments?: PostCommentCreateManyWithoutUserInput;
+  PostVisit?: PostVisitCreateManyWithoutUserInput;
   postVotes?: PostVoteCreateManyWithoutUserInput;
 };
 
@@ -6452,6 +7281,7 @@ export type UserUpdateWithoutCommentVotesDataInput = {
   groupUsers?: GroupUserUpdateManyWithoutUserInput;
   posts?: PostUpdateManyWithoutUserInput;
   comments?: PostCommentUpdateManyWithoutUserInput;
+  PostVisit?: PostVisitUpdateManyWithoutUserInput;
   postVotes?: PostVoteUpdateManyWithoutUserInput;
 };
 
@@ -6469,6 +7299,7 @@ export type PostCreateWithoutVotesInput = {
   group: GroupCreateOneWithoutPostsInput;
   user: UserCreateOneWithoutPostsInput;
   comments?: PostCommentCreateManyWithoutPostInput;
+  PostVisit?: PostVisitCreateManyWithoutPostInput;
 };
 
 export type UserCreateWithoutPostVotesInput = {
@@ -6482,6 +7313,7 @@ export type UserCreateWithoutPostVotesInput = {
   posts?: PostCreateManyWithoutUserInput;
   comments?: PostCommentCreateManyWithoutUserInput;
   commentVotes?: PostCommentVoteCreateManyWithoutUserInput;
+  PostVisit?: PostVisitCreateManyWithoutUserInput;
 };
 
 export type PostUpdateWithoutVotesDataInput = {
@@ -6493,6 +7325,7 @@ export type PostUpdateWithoutVotesDataInput = {
   group?: GroupUpdateOneRequiredWithoutPostsInput;
   user?: UserUpdateOneRequiredWithoutPostsInput;
   comments?: PostCommentUpdateManyWithoutPostInput;
+  PostVisit?: PostVisitUpdateManyWithoutPostInput;
 };
 
 export type PostUpsertWithoutVotesInput = {
@@ -6511,6 +7344,7 @@ export type UserUpdateWithoutPostVotesDataInput = {
   posts?: PostUpdateManyWithoutUserInput;
   comments?: PostCommentUpdateManyWithoutUserInput;
   commentVotes?: PostCommentVoteUpdateManyWithoutUserInput;
+  PostVisit?: PostVisitUpdateManyWithoutUserInput;
 };
 
 export type UserUpsertWithoutPostVotesInput = {
@@ -6531,6 +7365,7 @@ export type PostCreateWithoutUserInput = {
   updatedDate?: Date | string;
   group: GroupCreateOneWithoutPostsInput;
   comments?: PostCommentCreateManyWithoutPostInput;
+  PostVisit?: PostVisitCreateManyWithoutPostInput;
   votes?: PostVoteCreateManyWithoutPostInput;
 };
 
@@ -6547,6 +7382,11 @@ export type PostCommentVoteCreateWithoutUserInput = {
   voteType: number;
   updatedDatetime: Date | string;
   comment: PostCommentCreateOneWithoutVotesInput;
+};
+
+export type PostVisitCreateWithoutUserInput = {
+  time: Date | string;
+  Post?: PostCreateOneWithoutPostVisitInput;
 };
 
 export type PostVoteCreateWithoutUserInput = {
@@ -6600,6 +7440,17 @@ export type PostCommentVoteUpsertWithWhereUniqueWithoutUserInput = {
   create: PostCommentVoteCreateWithoutUserInput;
 };
 
+export type PostVisitUpdateWithWhereUniqueWithoutUserInput = {
+  where: PostVisitWhereUniqueInput;
+  data: PostVisitUpdateWithoutUserDataInput;
+};
+
+export type PostVisitUpsertWithWhereUniqueWithoutUserInput = {
+  where: PostVisitWhereUniqueInput;
+  update: PostVisitUpdateWithoutUserDataInput;
+  create: PostVisitCreateWithoutUserInput;
+};
+
 export type PostVoteUpdateWithWhereUniqueWithoutUserInput = {
   where: PostVoteWhereUniqueInput;
   data: PostVoteUpdateWithoutUserDataInput;
@@ -6609,6 +7460,68 @@ export type PostVoteUpsertWithWhereUniqueWithoutUserInput = {
   where: PostVoteWhereUniqueInput;
   update: PostVoteUpdateWithoutUserDataInput;
   create: PostVoteCreateWithoutUserInput;
+};
+
+export type PostCreateWithoutPostVisitInput = {
+  title: string;
+  content: string;
+  media?: string | null;
+  createdDate?: Date | string;
+  updatedDate?: Date | string;
+  group: GroupCreateOneWithoutPostsInput;
+  user: UserCreateOneWithoutPostsInput;
+  comments?: PostCommentCreateManyWithoutPostInput;
+  votes?: PostVoteCreateManyWithoutPostInput;
+};
+
+export type UserCreateWithoutPostVisitInput = {
+  username: string;
+  email: string;
+  password: string;
+  karma: number;
+  role: UserRole;
+  emailVerified?: boolean;
+  groupUsers?: GroupUserCreateManyWithoutUserInput;
+  posts?: PostCreateManyWithoutUserInput;
+  comments?: PostCommentCreateManyWithoutUserInput;
+  commentVotes?: PostCommentVoteCreateManyWithoutUserInput;
+  postVotes?: PostVoteCreateManyWithoutUserInput;
+};
+
+export type PostUpdateWithoutPostVisitDataInput = {
+  title?: string | StringFieldUpdateOperationsInput;
+  content?: string | StringFieldUpdateOperationsInput;
+  media?: string | NullableStringFieldUpdateOperationsInput | null;
+  createdDate?: Date | string | DateTimeFieldUpdateOperationsInput;
+  updatedDate?: Date | string | DateTimeFieldUpdateOperationsInput;
+  group?: GroupUpdateOneRequiredWithoutPostsInput;
+  user?: UserUpdateOneRequiredWithoutPostsInput;
+  comments?: PostCommentUpdateManyWithoutPostInput;
+  votes?: PostVoteUpdateManyWithoutPostInput;
+};
+
+export type PostUpsertWithoutPostVisitInput = {
+  update: PostUpdateWithoutPostVisitDataInput;
+  create: PostCreateWithoutPostVisitInput;
+};
+
+export type UserUpdateWithoutPostVisitDataInput = {
+  username?: string | StringFieldUpdateOperationsInput;
+  email?: string | StringFieldUpdateOperationsInput;
+  password?: string | StringFieldUpdateOperationsInput;
+  karma?: number | IntFieldUpdateOperationsInput;
+  role?: UserRole | EnumUserRoleFieldUpdateOperationsInput;
+  emailVerified?: boolean | BoolFieldUpdateOperationsInput;
+  groupUsers?: GroupUserUpdateManyWithoutUserInput;
+  posts?: PostUpdateManyWithoutUserInput;
+  comments?: PostCommentUpdateManyWithoutUserInput;
+  commentVotes?: PostCommentVoteUpdateManyWithoutUserInput;
+  postVotes?: PostVoteUpdateManyWithoutUserInput;
+};
+
+export type UserUpsertWithoutPostVisitInput = {
+  update: UserUpdateWithoutPostVisitDataInput;
+  create: UserCreateWithoutPostVisitInput;
 };
 
 export type GroupUserUpdateWithoutGroupDataInput = {
@@ -6634,6 +7547,7 @@ export type PostUpdateWithoutGroupDataInput = {
   updatedDate?: Date | string | DateTimeFieldUpdateOperationsInput;
   user?: UserUpdateOneRequiredWithoutPostsInput;
   comments?: PostCommentUpdateManyWithoutPostInput;
+  PostVisit?: PostVisitUpdateManyWithoutPostInput;
   votes?: PostVoteUpdateManyWithoutPostInput;
 };
 
@@ -6655,6 +7569,15 @@ export type PostCommentUpdateWithoutPostDataInput = {
 
 export type PostCommentUpdateManyDataInput = {
   content?: string | StringFieldUpdateOperationsInput;
+};
+
+export type PostVisitUpdateWithoutPostDataInput = {
+  time?: Date | string | DateTimeFieldUpdateOperationsInput;
+  User?: UserUpdateOneRequiredWithoutPostVisitInput;
+};
+
+export type PostVisitUpdateManyDataInput = {
+  time?: Date | string | DateTimeFieldUpdateOperationsInput;
 };
 
 export type PostVoteUpdateWithoutPostDataInput = {
@@ -6707,6 +7630,7 @@ export type PostUpdateWithoutUserDataInput = {
   updatedDate?: Date | string | DateTimeFieldUpdateOperationsInput;
   group?: GroupUpdateOneRequiredWithoutPostsInput;
   comments?: PostCommentUpdateManyWithoutPostInput;
+  PostVisit?: PostVisitUpdateManyWithoutPostInput;
   votes?: PostVoteUpdateManyWithoutPostInput;
 };
 
@@ -6723,6 +7647,11 @@ export type PostCommentVoteUpdateWithoutUserDataInput = {
   voteType?: number | IntFieldUpdateOperationsInput;
   updatedDatetime?: Date | string | DateTimeFieldUpdateOperationsInput;
   comment?: PostCommentUpdateOneRequiredWithoutVotesInput;
+};
+
+export type PostVisitUpdateWithoutUserDataInput = {
+  time?: Date | string | DateTimeFieldUpdateOperationsInput;
+  Post?: PostUpdateOneRequiredWithoutPostVisitInput;
 };
 
 export type PostVoteUpdateWithoutUserDataInput = {

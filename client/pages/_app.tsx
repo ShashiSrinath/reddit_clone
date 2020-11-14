@@ -76,7 +76,7 @@ function App(props) {
 App.getInitialProps = async ({ Component, ctx }) => {
   let pageProps = {};
   let user;
-  let apiPath = process.env.API_PATH
+  let apiPath = process.env.CLIENT_API_PATH
     ? process.env.CLIENT_API_PATH
     : `${ctx.req.headers['x-forwarded-proto']}://${ctx.req.headers.host}/api`;
 

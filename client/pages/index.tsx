@@ -3,11 +3,17 @@ import TimelinePost from '../components/timeline-post/timeline-post';
 import { createStyles, Grid, Theme } from '@material-ui/core';
 import { ServerApiRequest, useApiRequest } from '../lib/api-request';
 import PostFilterBar from '../components/post-filter-bar/post-filter-bar';
-import { useEffect, useState } from 'react';
-import { TimelinePost as TimeLinePostType } from '@bit/shashisrinath.9rush-types.postinterface';
+import { useContext, useEffect, useState } from 'react';
+import {
+  TimelinePost as TimeLinePostType,
+  RecentPost as RecentPostType,
+} from '@bit/shashisrinath.9rush-types.postinterface';
 import TimelinePostSkeleton from '../components/timeline-post/timeline-post-skeleton';
 import PageInfoLayout from '../components/page-info/page-info-layout';
 import { makeStyles } from '@material-ui/styles';
+import RecentPosts from '../components/recent-posts/recent-posts';
+import { GlobalContext } from '../context/global-state';
+import { parseCookies } from 'nookies';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,10 +24,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Home(props) {
+interface Props {
+  posts: TimeLinePostType[];
+  recentPostVisits?: RecentPostType[];
+}
+
+const Home: React.FC<Props> = (props) => {
   const classes = useStyles();
+  const {
+    auth: { state: authState },
+  } = useContext(GlobalContext);
   const [firstUpdate, setFirstUpdate] = useState(true);
-  const [posts, setPosts] = useState<TimeLinePostType[]>(props.data);
+  const [posts, setPosts] = useState<TimeLinePostType[]>(props.posts);
   const [sortType, setSortType] = useState('hot');
   const [isLoading, setLoading] = useState(false);
   const axios = useApiRequest();
@@ -87,19 +101,45 @@ export default function Home(props) {
             </Grid>
           </Grid>
           <Grid item sm={12} md={4} lg={4}>
-            <Grid container direction={'column'}>
+            <Grid container direction={'column'} spacing={5}>
               <Grid item>
                 <PageInfoLayout />
               </Grid>
+              {props.recentPostVisits?.length > 0 && (
+                <Grid item>
+                  <RecentPosts posts={props.recentPostVisits} />
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Grid>
       </Grid>
     </Grid>
   );
-}
+};
 
 export const getServerSideProps = async (context) => {
-  const res = await ServerApiRequest(context).get('posts?sortBy=hot&page=1');
-  return { props: { data: res.data } };
+  const pageProps: Props = {
+    posts: [],
+  };
+  const postRes = await ServerApiRequest(context).get(
+    'posts?sortBy=hot&page=1'
+  );
+  pageProps.posts = postRes.data;
+
+  if (parseCookies(context).jwt) {
+    try {
+      const recentPostVisitsRes = await ServerApiRequest(context).get(
+        'posts/recent-post-visits'
+      );
+
+      pageProps.recentPostVisits = recentPostVisitsRes.data;
+    } catch (e) {}
+  }
+
+  return {
+    props: pageProps,
+  };
 };
+
+export default Home;
