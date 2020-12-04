@@ -52,6 +52,7 @@ services:
       - nine-rush-network
 networks:
   nine-rush-network:
+    name: "nine-rush-network"
     driver: bridge
 volumes:
   nine-rush-postgres:
